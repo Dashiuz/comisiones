@@ -37,24 +37,7 @@
         Procesar
       </button>
 
-      <div id="tableResult">
-        <!-- <table class="table table-bordered">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">Atendidas</th>
-              <th scope="col">Perdidas</th>
-              <th scope="col">Total Llamadas</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>5000</td>
-              <td>5000</td>
-              <td>5000</td>
-            </tr>
-          </tbody>
-        </table> -->
-      </div>
+      <div id="tableResult"></div>
     </div>
 
     <script>
@@ -76,6 +59,7 @@
         });
 
         $("#btn_process_file").click(function () {
+          $("#tableResult").empty();
           if (fileName) {
             ipcRenderer.send("file:new", fileName);
           } else {
@@ -90,10 +74,8 @@
             return Object.entries(item);
           });
 
-          console.log(entries);
-
           $("#tableResult").append(`
-            <table class="table table-bordered">
+            <table id="newTable" class="table table-bordered">
               <thead id="tableHead" class="thead-dark">
                 <tr>
                   ${header.map((item) => {
