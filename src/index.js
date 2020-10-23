@@ -36,20 +36,20 @@ if (process.env.NODE_ENV !== "production") {
     hardResetMethod: "exit",
   });
 
-  menuTemplate.push({
-    label: "DevTools",
-    submenu: [
-      {
-        label: "show/hide Dev Tools",
-        click(item, focusedWindow) {
-          focusedWindow.toggleDevTools();
-        },
-      },
-      {
-        role: "reload",
-      },
-    ],
-  });
+  // menuTemplate.push({
+  //   label: "DevTools",
+  //   submenu: [
+  //     {
+  //       label: "show/hide Dev Tools",
+  //       click(item, focusedWindow) {
+  //         focusedWindow.toggleDevTools();
+  //       },
+  //     },
+  //     {
+  //       role: "reload",
+  //     },
+  //   ],
+  // });
 }
 
 if (process.platform == "darwin") {
@@ -69,7 +69,7 @@ app.on("ready", () => {
       enableRemoteModule: true,
       nodeIntegration: true,
     },
-    icon: path.join(__dirname, "icons/icons8-euro-96.png"),
+    icon: path.join(__dirname, "assets/icons/win/icon.ico"),
     width: 1200,
     height: 400,
   });
