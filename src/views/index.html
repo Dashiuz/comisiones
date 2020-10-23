@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Comisiones</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script src="https://pagecdn.io/lib/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+      window.jQuery ||
+        document.write(
+          '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><\/script>'
+        );
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="row justify-content-center">
+        Análisis de Archivo Excel de Comisiones
+      </h2>
+
+      <button id="btn_select_file" type="button" class="btn btn-primary btn-sm">
+        Seleccionar Archivo
+      </button>
+
+      <input id="iptFile" type="text" class="col-lg-9" disabled="true" />
+
+      <button
+        id="btn_process_file"
+        type="button"
+        class="btn btn-primary btn-sm"
+      >
+        Procesar
+      </button>
+
+      <div id="tableResult">
+        <!-- <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Atendidas</th>
+              <th scope="col">Perdidas</th>
+              <th scope="col">Total Llamadas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>5000</td>
+              <td>5000</td>
+              <td>5000</td>
+            </tr>
+          </tbody>
+        </table> -->
+      </div>
+    </div>
+
+    <script>
+      const dialog = require("electron").remote.dialog;
+      const ipcRenderer = require("electron").ipcRenderer;
+
+      $(document).ready(function () {
+        let fileName = "";
+
+        $("#btn_select_file").click(async function () {
+          const findFileName = await dialog.showOpenDialog({
+            title: "Seleccione un archivo de excel",
+            properties: ["openFile"],
+            filters: [{ name: "excel", extensions: ["xls", "xlsx"] }],
+          });
+
+          fileName = findFileName.filePaths[0];
+          $("#iptFile").val(fileName);
+        });
+
+        $("#btn_process_file").click(function () {
+          if (fileName) {
+            ipcRenderer.send("file:new", fileName);
+          } else {
+            alert("No ha seleccionado ningún archivo!");
+          }
+        });
+
+        ipcRenderer.on("data:new", (e, result) => {
+          let header = Object.keys(result[0]);
+
+          let entries = result.map((item) => {
+            return Object.entries(item);
+          });
+
+          console.log(entries);
+
+          $("#tableResult").append(`
+            <table class="table table-bordered">
+              <thead id="tableHead" class="thead-dark">
+                <tr>
+                  ${header.map((item) => {
+                    return `<th>${item}</th>`;
+                  })}
+                </tr>
+              </thead>
+              <tbody id="tableBody">                
+                  ${entries.map((item, idx) => {
+                    return `<tr>
+                      ${item.map((elem, j) => {
+                        console.log(elem);
+                        return `<td>${elem[1]}</td>`;
+                      })}
+                    </tr>`;
+                  })}                
+              </tbody>
+            </table>`);
+        });
+      });
+    </script>
+  </body>
+</html>
